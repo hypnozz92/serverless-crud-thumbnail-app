@@ -1,0 +1,2469 @@
+{
+  "service": {
+    "service": "crud-serverless-users",
+    "serviceObject": {
+      "name": "crud-serverless-users"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs18.x",
+      "s3": {
+        "bucketOne": {
+          "name": "crud-serverless-users-bucket",
+          "versioningConfiguration": {
+            "Status": "Enabled"
+          }
+        }
+      },
+      "environment": {
+        "bucketName": "crud-serverless-users-bucket"
+      },
+      "stage": "dev",
+      "region": "us-east-1",
+      "versionFunctions": true,
+      "iam": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "GetUnderscoreuseridLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/crud-serverless-users-dev-get_userid"
+            }
+          },
+          "GetUnderscoreusersLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/crud-serverless-users-dev-get_users"
+            }
+          },
+          "PostUnderscoreuserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/crud-serverless-users-dev-post_user"
+            }
+          },
+          "UpdateUnderscoreuserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/crud-serverless-users-dev-update_user"
+            }
+          },
+          "DeleteUnderscoreuserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/crud-serverless-users-dev-delete_user"
+            }
+          },
+          "SignedUnderscoreURLLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/crud-serverless-users-dev-signed_URL"
+            }
+          },
+          "ThumbnailUnderscoreappLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/crud-serverless-users-dev-thumbnail_app"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "crud-serverless-users",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "BaseLambdaLayer": {
+            "Type": "AWS::Lambda::LayerVersion",
+            "Properties": {
+              "Content": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697385682603-2023-10-15T16:01:22.603Z/nodejs.zip"
+              },
+              "LayerName": "thumbnail-prod-dep",
+              "CompatibleRuntimes": [
+                "nodejs18.x"
+              ]
+            }
+          },
+          "GetUnderscoreuseridLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/get_userid.zip"
+              },
+              "Handler": "READ/get_userid.get_userid",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "crud-serverless-users-dev-get_userid",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "bucketName": "crud-serverless-users-bucket"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "GetUnderscoreuseridIamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetUnderscoreuseridIamRoleLambdaExecution",
+              "GetUnderscoreuseridLogGroup"
+            ]
+          },
+          "GetUnderscoreusersLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/get_users.zip"
+              },
+              "Handler": "READ/get_users.get_users",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "crud-serverless-users-dev-get_users",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "bucketName": "crud-serverless-users-bucket"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "GetUnderscoreusersIamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetUnderscoreusersIamRoleLambdaExecution",
+              "GetUnderscoreusersLogGroup"
+            ]
+          },
+          "PostUnderscoreuserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/post_user.zip"
+              },
+              "Handler": "CREATE/post_user.post_user",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "crud-serverless-users-dev-post_user",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "bucketName": "crud-serverless-users-bucket"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "PostUnderscoreuserIamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "PostUnderscoreuserIamRoleLambdaExecution",
+              "PostUnderscoreuserLogGroup"
+            ]
+          },
+          "UpdateUnderscoreuserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/update_user.zip"
+              },
+              "Handler": "UPDATE/update_user.update_user",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "crud-serverless-users-dev-update_user",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "bucketName": "crud-serverless-users-bucket"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "UpdateUnderscoreuserIamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateUnderscoreuserIamRoleLambdaExecution",
+              "UpdateUnderscoreuserLogGroup"
+            ]
+          },
+          "DeleteUnderscoreuserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/delete_user.zip"
+              },
+              "Handler": "DELETE/delete_user.delete_user",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "crud-serverless-users-dev-delete_user",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "bucketName": "crud-serverless-users-bucket"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "DeleteUnderscoreuserIamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteUnderscoreuserIamRoleLambdaExecution",
+              "DeleteUnderscoreuserLogGroup"
+            ]
+          },
+          "SignedUnderscoreURLLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/signed_URL.zip"
+              },
+              "Handler": "pre-signed_URL/signed_URL.signed_URL",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "crud-serverless-users-dev-signed_URL",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "bucketName": "crud-serverless-users-bucket"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "SignedUnderscoreURLIamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "SignedUnderscoreURLIamRoleLambdaExecution",
+              "SignedUnderscoreURLLogGroup"
+            ]
+          },
+          "ThumbnailUnderscoreappLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/thumbnail_app.zip"
+              },
+              "Handler": "thumbnail/thumbnail_app.thumbnail_app",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "crud-serverless-users-dev-thumbnail_app",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "bucketName": "crud-serverless-users-bucket"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "ThumbnailUnderscoreappIamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Layers": [
+                {
+                  "Ref": "BaseLambdaLayer"
+                }
+              ]
+            },
+            "DependsOn": [
+              "ThumbnailUnderscoreappIamRoleLambdaExecution",
+              "ThumbnailUnderscoreappLogGroup"
+            ]
+          },
+          "GetUnderscoreuseridLambdaVersionQiDLOqJmwSpQmE5GpXpj6U4nRYweslY5opFfzJWzgKw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetUnderscoreuseridLambdaFunction"
+              },
+              "CodeSha256": "xjyAj3bXlV3YxaMv0ID9HH3b5ZdRGEAwjLPEjAgqkAQ="
+            }
+          },
+          "PostUnderscoreuserLambdaVersionvhnTAdYNz9zrnbSdAOfzktzQVOza8nxRfJ5dLC0YdU": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "PostUnderscoreuserLambdaFunction"
+              },
+              "CodeSha256": "wIiUABmilmtShBdgKLk4iKacEdZEdrscmj/+n6lX7FI="
+            }
+          },
+          "GetUnderscoreusersLambdaVersionnYTxZsv1ffVPqbW2CoqjRWlWFiqwGIKwsbcDWvuxYg": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetUnderscoreusersLambdaFunction"
+              },
+              "CodeSha256": "jrk/cx7l8mZ0hy8MbN7qwWr1YpFuop57NbjLAemW9UQ="
+            }
+          },
+          "DeleteUnderscoreuserLambdaVersioniw0uSPAK7yseV4Rm3ERuFyBV9KlRdTbHYPzcgDmiIE": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteUnderscoreuserLambdaFunction"
+              },
+              "CodeSha256": "ewJ5UKh++0sCFufjlgm1vbYsrwmeDdXFwq1p9epIvFI="
+            }
+          },
+          "UpdateUnderscoreuserLambdaVersionOX7WfAYoXi0kO9P9OMwuQsBi2EJopDmYIEaSGJaIms": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateUnderscoreuserLambdaFunction"
+              },
+              "CodeSha256": "BFaZ0sQX4IxUt5HC447GyDcYGopplV9nak9HAo/llv4="
+            }
+          },
+          "SignedUnderscoreURLLambdaVersioncUDevO0GcDt2wWI8CYnRyZ0pRsAR5ovtK0yEOTWQ1jo": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "SignedUnderscoreURLLambdaFunction"
+              },
+              "CodeSha256": "7VDqGn//FH2VEk7oeJJD+UFxqg9pIi7w9VcBEUVY/7w="
+            }
+          },
+          "ThumbnailUnderscoreappLambdaVersioneTcyWDGOHOnNbJeXbjuWNF4IX2veSp07Fu5FYnfI0pE": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ThumbnailUnderscoreappLambdaFunction"
+              },
+              "CodeSha256": "pBhjbzl9pwYuarf4hz8DMj0Nv8n/JnJGZC+ahb8vfnU="
+            }
+          },
+          "ThumbnailUnderscoreappCustomS31": {
+            "Type": "Custom::S3",
+            "Version": 1,
+            "DependsOn": [
+              "ThumbnailUnderscoreappLambdaFunction",
+              "CustomDashresourceDashexistingDashs3LambdaFunction"
+            ],
+            "Properties": {
+              "ServiceToken": {
+                "Fn::GetAtt": [
+                  "CustomDashresourceDashexistingDashs3LambdaFunction",
+                  "Arn"
+                ]
+              },
+              "FunctionName": "crud-serverless-users-dev-thumbnail_app",
+              "BucketName": "crud-serverless-users-bucket",
+              "BucketConfigs": [
+                {
+                  "Event": "s3:ObjectCreated:*",
+                  "Rules": [
+                    {
+                      "Prefix": "uploads/"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "IamRoleCustomResourcesLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "dev",
+                        "crud-serverless-users",
+                        "custom-resources-lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Resource": {
+                          "Fn::Join": [
+                            ":",
+                            [
+                              "arn",
+                              {
+                                "Ref": "AWS::Partition"
+                              },
+                              "s3",
+                              "",
+                              "",
+                              "crud-serverless-users-bucket"
+                            ]
+                          ]
+                        },
+                        "Action": [
+                          "s3:PutBucketNotification",
+                          "s3:GetBucketNotification"
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Resource": {
+                          "Fn::Join": [
+                            ":",
+                            [
+                              "arn",
+                              {
+                                "Ref": "AWS::Partition"
+                              },
+                              "lambda",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              {
+                                "Ref": "AWS::AccountId"
+                              },
+                              "function",
+                              "*"
+                            ]
+                          ]
+                        },
+                        "Action": [
+                          "lambda:AddPermission",
+                          "lambda:RemovePermission"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "CustomDashresourceDashexistingDashs3LambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z/custom-resources.zip"
+              },
+              "FunctionName": "crud-serverless-users-dev-custom-resource-existing-s3",
+              "Handler": "s3/handler.handler",
+              "MemorySize": 1024,
+              "Runtime": "nodejs16.x",
+              "Timeout": 180,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleCustomResourcesLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "IamRoleCustomResourcesLambdaExecution"
+            ]
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "dev-crud-serverless-users",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              },
+              "Policy": ""
+            }
+          },
+          "ApiGatewayResourceUsers": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "users",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceUsersIdVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceUsers"
+              },
+              "PathPart": "{id}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceSignedurl": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "signedurl",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodUsersIdVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {
+                "method.request.path.id": true
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetUnderscoreuseridLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": [],
+              "RequestValidatorId": {
+                "Ref": "ApiGatewayCrudserverlessusersRequestValidator"
+              }
+            },
+            "DependsOn": [
+              "GetUnderscoreuseridLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsers"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetUnderscoreusersLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "GetUnderscoreusersLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsers"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "PostUnderscoreuserLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": [],
+              "RequestValidatorId": {
+                "Ref": "ApiGatewayCrudserverlessusersRequestValidator"
+              },
+              "RequestModels": {
+                "application/json": {
+                  "Ref": "ApiGatewayMethodUsersPostApplicationJsonModel"
+                }
+              }
+            },
+            "DependsOn": [
+              "PostUnderscoreuserLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersIdVarPatch": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PATCH",
+              "RequestParameters": {
+                "method.request.path.id": true
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateUnderscoreuserLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": [],
+              "RequestValidatorId": {
+                "Ref": "ApiGatewayCrudserverlessusersRequestValidator"
+              },
+              "RequestModels": {
+                "application/json": {
+                  "Ref": "ApiGatewayMethodUsersIdVarPatchApplicationJsonModel"
+                }
+              }
+            },
+            "DependsOn": [
+              "UpdateUnderscoreuserLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersIdVarDelete": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "DELETE",
+              "RequestParameters": {
+                "method.request.path.id": true
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "DeleteUnderscoreuserLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": [],
+              "RequestValidatorId": {
+                "Ref": "ApiGatewayCrudserverlessusersRequestValidator"
+              }
+            },
+            "DependsOn": [
+              "DeleteUnderscoreuserLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodSignedurlGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {
+                "method.request.querystring.filename": true
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceSignedurl"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "SignedUnderscoreURLLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": [],
+              "RequestValidatorId": {
+                "Ref": "ApiGatewayCrudserverlessusersRequestValidator"
+              }
+            },
+            "DependsOn": [
+              "SignedUnderscoreURLLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayCrudserverlessusersRequestValidator": {
+            "Type": "AWS::ApiGateway::RequestValidator",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ValidateRequestBody": true,
+              "ValidateRequestParameters": true,
+              "Name": "crud-serverless-users-dev | Validate request body and querystring parameters"
+            }
+          },
+          "ApiGatewayMethodUsersPostApplicationJsonModel": {
+            "Type": "AWS::ApiGateway::Model",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ContentType": "application/json",
+              "Schema": {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "title": "User",
+                "type": "object",
+                "required": [
+                  "name",
+                  "id",
+                  "email"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The person's first name."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "The user's ID."
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": " User email addres"
+                  }
+                }
+              }
+            }
+          },
+          "ApiGatewayMethodUsersIdVarPatchApplicationJsonModel": {
+            "Type": "AWS::ApiGateway::Model",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ContentType": "application/json",
+              "Schema": {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "title": "User",
+                "type": "object",
+                "required": [
+                  "name",
+                  "id",
+                  "email"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The person's first name."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "The user's ID."
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": " User email addres"
+                  }
+                }
+              }
+            }
+          },
+          "ApiGatewayDeployment1697388488374": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "dev"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodUsersIdVarGet",
+              "ApiGatewayMethodUsersGet",
+              "ApiGatewayMethodUsersPost",
+              "ApiGatewayMethodUsersIdVarPatch",
+              "ApiGatewayMethodUsersIdVarDelete",
+              "ApiGatewayMethodSignedurlGet"
+            ]
+          },
+          "GetUnderscoreuseridLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetUnderscoreuseridLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetUnderscoreusersLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetUnderscoreusersLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "PostUnderscoreuserLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "PostUnderscoreuserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateUnderscoreuserLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateUnderscoreuserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "DeleteUnderscoreuserLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteUnderscoreuserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "SignedUnderscoreURLLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "SignedUnderscoreURLLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetUnderscoreuseridIamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev-get_userid:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:BatchGet*"
+                        ],
+                        "Resource": "arn:aws:dynamodb:us-east-1:125137910162:table/usersTable"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": "get_userid_role",
+              "ManagedPolicyArns": []
+            }
+          },
+          "GetUnderscoreusersIamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev-get_users:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:Scan"
+                        ],
+                        "Resource": "arn:aws:dynamodb:us-east-1:125137910162:table/usersTable"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": "get_users_role",
+              "ManagedPolicyArns": []
+            }
+          },
+          "PostUnderscoreuserIamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev-post_user:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:PutItem"
+                        ],
+                        "Resource": "arn:aws:dynamodb:us-east-1:125137910162:table/usersTable"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": "post_user_role",
+              "ManagedPolicyArns": []
+            }
+          },
+          "UpdateUnderscoreuserIamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev-update_user:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:Update*"
+                        ],
+                        "Resource": "arn:aws:dynamodb:us-east-1:125137910162:table/usersTable"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": "update_user_role",
+              "ManagedPolicyArns": []
+            }
+          },
+          "DeleteUnderscoreuserIamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev-delete_user:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:Delete*"
+                        ],
+                        "Resource": "arn:aws:dynamodb:us-east-1:125137910162:table/usersTable"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": "delete_user_role",
+              "ManagedPolicyArns": []
+            }
+          },
+          "SignedUnderscoreURLIamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev-signed_URL:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "s3:GetObject",
+                          "s3:PutObject"
+                        ],
+                        "Resource": "arn:aws:s3:::crud-serverless-users-bucket/*"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": "pre-signed_URL_role",
+              "ManagedPolicyArns": []
+            }
+          },
+          "ThumbnailUnderscoreappIamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "crud-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/crud-serverless-users-dev-thumbnail_app:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "s3:*"
+                        ],
+                        "Resource": "arn:aws:s3:::crud-serverless-users-bucket/*"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "crud-serverless-users",
+                    "dev",
+                    "thumbnail_app",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              },
+              "ManagedPolicyArns": []
+            }
+          },
+          "usersTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "usersTable",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "pk",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "pk",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "S3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "crud-serverless-users-bucket",
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": false,
+                "BlockPublicPolicy": false,
+                "IgnorePublicAcls": false,
+                "RestrictPublicBuckets": false
+              }
+            }
+          },
+          "S3BucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "S3Bucket"
+              },
+              "PolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": [
+                      "s3:GetObject",
+                      "s3:PutObject"
+                    ],
+                    "Resource": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref": "S3Bucket"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "BaseLambdaLayerQualifiedArn": {
+            "Description": "Current Lambda layer version",
+            "Value": {
+              "Ref": "BaseLambdaLayer"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-BaseLambdaLayerQualifiedArn"
+            }
+          },
+          "BaseLambdaLayerHash": {
+            "Description": "Current Lambda layer hash",
+            "Value": "71b62ebfe66520e466109e41349e6be5fc812875",
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-BaseLambdaLayerHash"
+            }
+          },
+          "BaseLambdaLayerS3Key": {
+            "Description": "Current Lambda layer S3Key",
+            "Value": "serverless/crud-serverless-users/dev/1697385682603-2023-10-15T16:01:22.603Z/nodejs.zip",
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-BaseLambdaLayerS3Key"
+            }
+          },
+          "GetUnderscoreuseridLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetUnderscoreuseridLambdaVersionQiDLOqJmwSpQmE5GpXpj6U4nRYweslY5opFfzJWzgKw"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-GetUnderscoreuseridLambdaFunctionQualifiedArn"
+            }
+          },
+          "PostUnderscoreuserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "PostUnderscoreuserLambdaVersionvhnTAdYNz9zrnbSdAOfzktzQVOza8nxRfJ5dLC0YdU"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-PostUnderscoreuserLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetUnderscoreusersLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetUnderscoreusersLambdaVersionnYTxZsv1ffVPqbW2CoqjRWlWFiqwGIKwsbcDWvuxYg"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-GetUnderscoreusersLambdaFunctionQualifiedArn"
+            }
+          },
+          "DeleteUnderscoreuserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteUnderscoreuserLambdaVersioniw0uSPAK7yseV4Rm3ERuFyBV9KlRdTbHYPzcgDmiIE"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-DeleteUnderscoreuserLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateUnderscoreuserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateUnderscoreuserLambdaVersionOX7WfAYoXi0kO9P9OMwuQsBi2EJopDmYIEaSGJaIms"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-UpdateUnderscoreuserLambdaFunctionQualifiedArn"
+            }
+          },
+          "SignedUnderscoreURLLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "SignedUnderscoreURLLambdaVersioncUDevO0GcDt2wWI8CYnRyZ0pRsAR5ovtK0yEOTWQ1jo"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-SignedUnderscoreURLLambdaFunctionQualifiedArn"
+            }
+          },
+          "ThumbnailUnderscoreappLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ThumbnailUnderscoreappLambdaVersioneTcyWDGOHOnNbJeXbjuWNF4IX2veSp07Fu5FYnfI0pE"
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-ThumbnailUnderscoreappLambdaFunctionQualifiedArn"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-crud-serverless-users-dev-ServiceEndpoint"
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "custom": {
+      "dynamodb": {
+        "stages": [
+          "dev"
+        ],
+        "start": {
+          "port": 8000,
+          "inMemory": true,
+          "migrate": true
+        }
+      }
+    },
+    "plugins": [
+      "serverless-iam-roles-per-function"
+    ],
+    "pluginsData": {},
+    "functions": {
+      "get_userid": {
+        "handler": "READ/get_userid.get_userid",
+        "iamRoleStatementsName": "get_userid_role",
+        "iamRoleStatements": [
+          {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetUnderscoreuseridIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
+          }
+        ],
+        "package": {
+          "patterns": [
+            "READ/get_userid.mjs"
+          ],
+          "artifact": "C:\\Users\\Jaime\\Documents\\platzi\\JOB_1\\get-users_cloud\\.serverless\\get_userid.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "users/{id}",
+              "method": "get",
+              "request": {
+                "parameters": {
+                  "method.request.path.id": true
+                }
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "crud-serverless-users-dev-get_userid",
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "GetUnderscoreuseridLambdaVersionQiDLOqJmwSpQmE5GpXpj6U4nRYweslY5opFfzJWzgKw"
+      },
+      "get_users": {
+        "handler": "READ/get_users.get_users",
+        "iamRoleStatementsName": "get_users_role",
+        "iamRoleStatements": [
+          {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetUnderscoreusersIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
+          }
+        ],
+        "package": {
+          "patterns": [
+            "READ/get_users.mjs"
+          ],
+          "artifact": "C:\\Users\\Jaime\\Documents\\platzi\\JOB_1\\get-users_cloud\\.serverless\\get_users.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "users",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "crud-serverless-users-dev-get_users",
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "GetUnderscoreusersLambdaVersionnYTxZsv1ffVPqbW2CoqjRWlWFiqwGIKwsbcDWvuxYg"
+      },
+      "post_user": {
+        "handler": "CREATE/post_user.post_user",
+        "iamRoleStatementsName": "post_user_role",
+        "iamRoleStatements": [
+          {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"PostUnderscoreuserIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
+          }
+        ],
+        "package": {
+          "patterns": [
+            "CREATE/post_user.mjs"
+          ],
+          "artifact": "C:\\Users\\Jaime\\Documents\\platzi\\JOB_1\\get-users_cloud\\.serverless\\post_user.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "users",
+              "method": "post",
+              "request": {
+                "schemas": {
+                  "application/json": {
+                    "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"ApiGatewayMethodUsersPostApplicationJsonModel\"][\"Properties\"][\"Schema\"]"
+                  }
+                }
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "crud-serverless-users-dev-post_user",
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "PostUnderscoreuserLambdaVersionvhnTAdYNz9zrnbSdAOfzktzQVOza8nxRfJ5dLC0YdU"
+      },
+      "update_user": {
+        "handler": "UPDATE/update_user.update_user",
+        "iamRoleStatementsName": "update_user_role",
+        "iamRoleStatements": [
+          {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"UpdateUnderscoreuserIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
+          }
+        ],
+        "package": {
+          "patterns": [
+            "UPDATE/update_user.mjs"
+          ],
+          "artifact": "C:\\Users\\Jaime\\Documents\\platzi\\JOB_1\\get-users_cloud\\.serverless\\update_user.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "users/{id}",
+              "method": "patch",
+              "request": {
+                "parameters": {
+                  "method.request.path.id": true
+                },
+                "schemas": {
+                  "application/json": {
+                    "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"ApiGatewayMethodUsersIdVarPatchApplicationJsonModel\"][\"Properties\"][\"Schema\"]"
+                  }
+                }
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "crud-serverless-users-dev-update_user",
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "UpdateUnderscoreuserLambdaVersionOX7WfAYoXi0kO9P9OMwuQsBi2EJopDmYIEaSGJaIms"
+      },
+      "delete_user": {
+        "handler": "DELETE/delete_user.delete_user",
+        "iamRoleStatementsName": "delete_user_role",
+        "iamRoleStatements": [
+          {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"DeleteUnderscoreuserIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
+          }
+        ],
+        "package": {
+          "patterns": [
+            "DELETE/delete_user.mjs"
+          ],
+          "artifact": "C:\\Users\\Jaime\\Documents\\platzi\\JOB_1\\get-users_cloud\\.serverless\\delete_user.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "users/{id}",
+              "method": "delete",
+              "request": {
+                "parameters": {
+                  "method.request.path.id": true
+                }
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "crud-serverless-users-dev-delete_user",
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "DeleteUnderscoreuserLambdaVersioniw0uSPAK7yseV4Rm3ERuFyBV9KlRdTbHYPzcgDmiIE"
+      },
+      "signed_URL": {
+        "handler": "pre-signed_URL/signed_URL.signed_URL",
+        "iamRoleStatementsName": "pre-signed_URL_role",
+        "iamRoleStatements": [
+          {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"SignedUnderscoreURLIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
+          }
+        ],
+        "package": {
+          "patterns": [
+            "pre-signed_URL/signed_URL.mjs"
+          ],
+          "artifact": "C:\\Users\\Jaime\\Documents\\platzi\\JOB_1\\get-users_cloud\\.serverless\\signed_URL.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "signedurl",
+              "method": "get",
+              "request": {
+                "parameters": {
+                  "method.request.querystring.filename": true
+                }
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "crud-serverless-users-dev-signed_URL",
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "SignedUnderscoreURLLambdaVersioncUDevO0GcDt2wWI8CYnRyZ0pRsAR5ovtK0yEOTWQ1jo"
+      },
+      "thumbnail_app": {
+        "handler": "thumbnail/thumbnail_app.thumbnail_app",
+        "layers": {
+          "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"ThumbnailUnderscoreappLambdaFunction\"][\"Properties\"][\"Layers\"]"
+        },
+        "iamRoleStatements": [
+          {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"ThumbnailUnderscoreappIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
+          }
+        ],
+        "package": {
+          "patterns": [
+            "thumbnail/thumbnail_app.mjs"
+          ],
+          "artifact": "C:\\Users\\Jaime\\Documents\\platzi\\JOB_1\\get-users_cloud\\.serverless\\thumbnail_app.zip"
+        },
+        "events": [
+          {
+            "s3": {
+              "bucket": "crud-serverless-users-bucket",
+              "event": "s3:ObjectCreated:*",
+              "existing": true,
+              "rules": [
+                {
+                  "prefix": "uploads/"
+                }
+              ]
+            }
+          }
+        ],
+        "name": "crud-serverless-users-dev-thumbnail_app",
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "ThumbnailUnderscoreappLambdaVersioneTcyWDGOHOnNbJeXbjuWNF4IX2veSp07Fu5FYnfI0pE"
+      }
+    },
+    "resources": {
+      "Resources": {
+        "usersTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "usersTable",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "pk",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "pk",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "S3Bucket": {
+          "Type": "AWS::S3::Bucket",
+          "Properties": {
+            "BucketName": "crud-serverless-users-bucket",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": false,
+              "BlockPublicPolicy": false,
+              "IgnorePublicAcls": false,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        "S3BucketPolicy": {
+          "Type": "AWS::S3::BucketPolicy",
+          "Properties": {
+            "Bucket": {
+              "Ref": "S3Bucket"
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject"
+                  ],
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:s3:::",
+                        {
+                          "Ref": "S3Bucket"
+                        },
+                        "/*"
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Outputs": {}
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless.yml",
+    "initialServerlessConfig": {
+      "service": "crud-serverless-users",
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "plugins": {
+        "$ref": "$[\"service\"][\"plugins\"]"
+      },
+      "package": {
+        "individually": true,
+        "patterns": [
+          "!*/**",
+          "!*",
+          "!node_modules/*"
+        ],
+        "artifactsS3KeyDirname": "serverless/crud-serverless-users/dev/code-artifacts",
+        "artifactDirectoryName": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z"
+      },
+      "custom": {
+        "$ref": "$[\"service\"][\"custom\"]"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      },
+      "layers": {
+        "Base": {
+          "name": "thumbnail-prod-dep",
+          "compatibleRuntimes": {
+            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"BaseLambdaLayer\"][\"Properties\"][\"CompatibleRuntimes\"]"
+          },
+          "package": {
+            "artifact": "nodejs.zip"
+          },
+          "artifactAlreadyUploaded": true
+        }
+      },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
+      }
+    },
+    "layers": {
+      "$ref": "$[\"service\"][\"initialServerlessConfig\"][\"layers\"]"
+    },
+    "isDashboardMonitoringPreconfigured": false
+  },
+  "package": {
+    "individually": true,
+    "artifactDirectoryName": "serverless/crud-serverless-users/dev/1697388492943-2023-10-15T16:48:12.943Z",
+    "artifact": ""
+  }
+}
