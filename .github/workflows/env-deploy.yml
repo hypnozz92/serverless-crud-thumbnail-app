@@ -1,4 +1,4 @@
-name: Deploy ENV
+name: Deploy Crud App
 
 on:
   pull_request:
