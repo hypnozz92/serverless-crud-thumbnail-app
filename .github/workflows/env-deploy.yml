@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     name: Build Mjs Layer
-    Container:
+    container:
       image: 'node:18-alpine'
     steps:
       - uses: actions/checkout@v2
