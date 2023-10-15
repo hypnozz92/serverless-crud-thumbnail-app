@@ -34,7 +34,7 @@ jobs:
           mkdir nodejs
           mv node_modules nodejs
           apt update
-          apt-get install zip
+          apt-get install zip -y
           zip -r nodejs.zip nodejs/
 
       - uses: actions/upload-artifact@v3
