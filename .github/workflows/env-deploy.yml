@@ -33,8 +33,8 @@ jobs:
           npm install --save-dev serverless-iam-roles-per-function
           mkdir nodejs
           mv node_modules nodejs
-          sudo apt update
-          sudo apt-get install zip
+          apt update
+          apt-get install zip
           zip -r nodejs.zip nodejs/
 
       - uses: actions/upload-artifact@v3
