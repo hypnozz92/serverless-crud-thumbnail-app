@@ -3,6 +3,9 @@ service: crud-serverless-users
 provider:
   name: aws
   runtime: nodejs18.x
+  apiGateway:
+    apiKeys:
+      - ${self:service}-apiKey
   iam:
     # role:
     #   statements:

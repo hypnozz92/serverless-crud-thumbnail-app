@@ -34,7 +34,6 @@ jobs:
           mv node_modules nodejs
           apt update -y && apt install zip -y
           zip -r nodejs.zip nodejs/
-          npm install --save-dev serverless-iam-roles-per-function
 
       - uses: actions/upload-artifact@v3
         with:
