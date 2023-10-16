@@ -80,6 +80,7 @@ functions:
       patterns: 'READ/get_users.mjs'
     events:
       - http:
+          private: true
           path: users
           method: GET
 
