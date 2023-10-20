@@ -33,7 +33,7 @@ plugins:
   - serverless-lift
 
 constructs:
-  ${self:service}-queue:
+  CRUD-queue:
     type: queue
     batchSize: 1
     worker:
