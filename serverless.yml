@@ -25,6 +25,7 @@ provider:
 
   environment:
     bucketName: ${self:service}-bucket
+    SECRET_EGG: ${ssm:/SECRET_EGG}
 
 plugins:
   # - serverless-offline
