@@ -44,7 +44,7 @@ constructs:
           - 'likeUser/likeUser-App.mjs'
     extensions:
       queue:
-      Properties:
+      properties:
         QueueName: likequeue
 
 package:
