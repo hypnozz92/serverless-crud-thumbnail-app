@@ -38,7 +38,6 @@ constructs:
     batchSize: 1
     worker:
       handler: likeUser/likeUser-App.likeUser
-      reservedConcurrency: 10
       package:
         patterns:
           - 'likeUser/likeUser-App.mjs'
