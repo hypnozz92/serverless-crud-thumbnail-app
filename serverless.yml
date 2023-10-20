@@ -6,17 +6,17 @@ provider:
   apiGateway:
     apiKeys:
       - ${self:service}-apiKey
-  iam:
-    # role:
-    #   statements:
-    #     - Effect: Allow
-    #       Action: 'dynamoDB:*'
-    #       Resource: arn:aws:dynamodb:us-east-1:125137910162:table/usersTable
-    #     - Effect: Allow
-    #       Action:
-    #         - 's3:GetObject'
-    #         - 's3:PutObject'
-    #       Resource: 'arn:aws:s3:::${self:service}-bucket/*'
+  # iam:
+  # role:
+  #   statements:
+  #     - Effect: Allow
+  #       Action: 'dynamoDB:*'
+  #       Resource: arn:aws:dynamodb:us-east-1:125137910162:table/usersTable
+  #     - Effect: Allow
+  #       Action:
+  #         - 's3:GetObject'
+  #         - 's3:PutObject'
+  #       Resource: 'arn:aws:s3:::${self:service}-bucket/*'
   s3:
     bucketOne:
       name: ${self:service}-bucket
@@ -28,9 +28,24 @@ provider:
     SECRET_EGG: ${ssm:/SECRET_EGG}
 
 plugins:
-  # - serverless-offline
-  # - serverless-dynamodb-local
   - serverless-iam-roles-per-function
+  - serverless-apigateway-service-proxy
+  - serverless-lift
+
+constructs:
+  ${self:service}-queue:
+    type: queue
+    batchSize: 1
+    worker:
+      handler: likeUser/likeUser-App.likeUser
+      reservedConcurrency: 1
+      package:
+        patterns:
+          - 'likeUser/likeUser-App.mjs'
+    extensions:
+      queue:
+      Properties:
+        QueueName: likequeue
 
 package:
   individually: true
@@ -48,6 +63,24 @@ custom:
       port: 8000
       inMemory: true
       migrate: true
+
+  apiGatewayServiceProxies:
+    - sqs:
+        path: /likeuser
+        method: post
+        queueName: likequeue
+        cors: true
+        response:
+          template:
+            # `success` is used when the integration response is 200
+            success: |-
+              { "message: "accepted" }
+            # `clientError` is used when the integration response is 400
+            clientError: |-
+              { "message": "there is an error in your request" }
+            # `serverError` is used when the integration response is 500
+            serverError: |-
+              { "message": "there was an error handling your request" }
 
 functions:
   get_userid:

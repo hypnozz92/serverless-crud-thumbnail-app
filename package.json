@@ -11,12 +11,15 @@
   "license": "ISC",
   "devDependencies": {
     "serverless": "^3.21.0",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-lift": "^1.28.0",
     "serverless-offline": "^13.1.2"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.425.0",
-    "serverless-dynamodb-local": "^0.2.40",
-    "sharp": "^0.32.6",
-    "serverless-iam-roles-per-function": "^3.2.0"
+    "serverless-apigateway-service-proxy": "^2.2.1",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-lift": "^1.28.0",
+    "sharp": "^0.32.6"
   }
 }
